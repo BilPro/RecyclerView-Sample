@@ -1,0 +1,22 @@
+Step 1: Add dependencies:
+
+implementation "androidx.recyclerview:recyclerview:1.1.0"
+
+Step 2: Add Recycler view adapter with ViewHolder
+    Check code for more information, you can create ViewHolder in separate file.
+
+Step 3: Add logic in onBindViewHolder
+
+Step 4: Step code in Activity
+
+Step 5: Step click listener
+    1. Add this in adapter constructor
+        , val clickListener: (view: View,position : Int) -> Unit
+    2. in onBindViewHolder
+    clRow.setOnClickListener {
+                    clickListener(v,position)
+                }
+    3.  when passing in constructor
+        viewAdapter = MyAdapter(myDataset){ view: View, position: Int ->
+                    Toast.makeText(this,"Clicked $position",Toast.LENGTH_SHORT).show()
+                }
