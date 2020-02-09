@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import b.learn.rvtest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,19 +16,29 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var myDataset: Array<String>
+    private lateinit var userData: ArrayList<User>
+
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        //setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(
+            this, R.layout.activity_main)
 
         myDataset=  Array<String>(130) { "$it" }
+        userData = ArrayList()
+        for(data in myDataset){
+            var user = User(id = data, title = "User " +data,desc = "Desc "+data )
+            userData.add(user)
+        }
 
         viewManager = LinearLayoutManager(this)
-        viewAdapter = MyAdapter(myDataset){ view: View, position: Int ->
+        viewAdapter = MyAdapter(userData){ position: Int ->
             Toast.makeText(this,"Clicked $position",Toast.LENGTH_SHORT).show()
         }
 
-        recyclerView = findViewById<RecyclerView>(R.id.my_recycler_view).apply {
+        binding.myRecyclerView.apply {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
