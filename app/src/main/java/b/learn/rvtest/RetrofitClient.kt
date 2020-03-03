@@ -1,0 +1,26 @@
+package b.learn.rvtest
+
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+
+object RetrofitClient {
+
+    fun getService(): QuatesService{
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level=HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        var retrofit:Retrofit = Retrofit.Builder()
+            .baseUrl("https://programming-quotes-api.herokuapp.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+
+        var service: QuatesService=retrofit.create(QuatesService::class.java)
+        return service
+    }
+
+}

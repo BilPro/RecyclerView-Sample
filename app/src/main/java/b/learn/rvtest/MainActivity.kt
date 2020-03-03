@@ -2,16 +2,20 @@ package b.learn.rvtest
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import b.learn.rvtest.databinding.ActivityMainBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
     //https://programming-quotes-api.herokuapp.com/quotes
+    //https://codeburst.io/android-swipe-menu-with-recyclerview-8f28a235ff28
+    //https://medium.com/exploring-android/android-networking-with-coroutines-and-retrofit-a2f20dd40a83
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -33,21 +37,33 @@ class MainActivity : AppCompatActivity() {
             userData.add(user)
         }
 
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = MyAdapter(userData){ position: Int ->
-            Toast.makeText(this,"Clicked $position",Toast.LENGTH_SHORT).show()
-        }
+        RetrofitClient.getService().getProgrammingQuotes()?.enqueue(object: Callback<List<Quote>>{
+            override fun onResponse(call: Call<List<Quote>>, response: Response<List<Quote>>) {
+                if(response.isSuccessful) {
+                    viewManager = LinearLayoutManager(this@MainActivity)
 
-        binding.myRecyclerView.apply {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
-            setHasFixedSize(true)
+                    viewAdapter = MyAdapter(response.body() as ArrayList<Quote>) { position: Int ->
+                        //Toast.makeText(MainActivity::class.java,"Clicked $position",Toast.LENGTH_SHORT).show()
+                    }
 
-            // use a linear layout manager
-            layoutManager = viewManager
+                    binding.myRecyclerView.apply {
+                        // use this setting to improve performance if you know that changes
+                        // in content do not change the layout size of the RecyclerView
+                        setHasFixedSize(true)
 
-            // specify an viewAdapter (see also next example)
-            adapter = viewAdapter
-        }
+                        // use a linear layout manager
+                        layoutManager = viewManager
+
+                        // specify an viewAdapter (see also next example)
+                        adapter = viewAdapter
+                    }
+                }
+            }
+            override fun onFailure(call: Call<List<Quote>>, t: Throwable) {
+                //t.printStackTrace()
+            }
+        })
+
+
     }
 }

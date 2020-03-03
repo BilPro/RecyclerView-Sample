@@ -9,7 +9,7 @@ import b.learn.rvtest.databinding.MyTextViewBinding
 
 //https://www.androidhive.info/android-databinding-in-recyclerview-profile-screen/
 
-class MyAdapter(private val users:ArrayList<User>, val clickListener: (position : Int) -> Unit) :
+class MyAdapter(private val users:ArrayList<Quote>, val clickListener: (position : Int) -> Unit) :
     RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     lateinit var layoutInflater :LayoutInflater
@@ -22,10 +22,10 @@ class MyAdapter(private val users:ArrayList<User>, val clickListener: (position 
         //var tvTitle = binding.tvTitle
         //var tvDescribtion = binding.tvDescription
         var clRow = binding.clRow
-        var user : User? = binding.user
+        var quote : Quote? = binding.quote
 
-        fun bind (user : User, clickListener:(position : Int) -> Unit){
-            binding.user=user
+        fun bind (quote : Quote, clickListener:(position : Int) -> Unit){
+            binding.quote=quote
             clRow.setOnClickListener {
                 clickListener(adapterPosition)
             }
