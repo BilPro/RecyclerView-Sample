@@ -15,11 +15,35 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        release
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    def Properties props = new Properties()
+    def propFile = file('myproject.properties')
+    if (propFile.canRead()){
+        props.load(new FileInputStream(propFile))
+
+        if (props!=null && props.containsKey('keystore') && props.containsKey('keystore.password') &&
+                props.containsKey('keyAlias') && props.containsKey('keyPassword')) {
+
+            android.signingConfigs.release.storeFile = file(props['keystore'])
+            android.signingConfigs.release.storePassword = props['keystore.password']
+            android.signingConfigs.release.keyAlias = props['keyAlias']
+            android.signingConfigs.release.keyPassword = props['keyPassword']
+        } else {
+            android.buildTypes.release.signingConfig = null
+        }
+    }else {
+        android.buildTypes.release.signingConfig = null
     }
 }
 
