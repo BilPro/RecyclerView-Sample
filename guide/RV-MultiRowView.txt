@@ -1,0 +1,12 @@
+Step 1:
+    Change the adapter return type to RecyclerView.ViewHolder
+
+Step 2:
+    Also change return type of onCreateViewHolder to RecyclerView.ViewHolder
+    And return view holder type according to row type
+
+Step 3:
+    Bind view according to view type in onBindViewHolder
+
+Step 4:
+   override getItemViewType return view type according to you logic to show view

@@ -37,12 +37,12 @@ class MainActivity : AppCompatActivity() {
             this, R.layout.activity_main
         )
 
-        myDataset = Array<String>(130) { "$it" }
+        /*myDataset = Array<String>(130) { "$it" }
         userData = ArrayList()
         for (data in myDataset) {
             var user = User(id = data, title = "User " + data, desc = "Desc " + data)
             userData.add(user)
-        }
+        }*/
 
         /*RetrofitClient.getService().getProgrammingQuotes()?.enqueue(object: Callback<List<Quote>>{
             override fun onResponse(call: Call<List<Quote>>, response: Response<List<Quote>>) {
@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         })
 
 */
+
         CoroutineScope(Dispatchers.IO).launch {
             val response = RetrofitClient.getService().getProgrammingQuotes()
             withContext(Dispatchers.Main) {

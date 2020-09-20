@@ -1,16 +1,20 @@
 package b.learn.rvtest
 
-import android.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import b.learn.rvtest.databinding.MyTextViewBinding
+import b.learn.rvtest.databinding.RowTypeTwoBinding
 
 
 //https://www.androidhive.info/android-databinding-in-recyclerview-profile-screen/
+//https://stackoverflow.com/a/59030115/3529309
 
-class MyAdapter(private val users:ArrayList<Quote>, val clickListener: (position : Int) -> Unit) :
-    RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (position : Int) -> Unit) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val VIEW_TYPE_1 : Int =0
+    private val VIEW_TYPE_2 : Int =1
 
     lateinit var layoutInflater :LayoutInflater
     // Provide a reference to the views for each data item
@@ -33,39 +37,67 @@ class MyAdapter(private val users:ArrayList<Quote>, val clickListener: (position
         }
     }
 
+    class TypeTwoViewHolder(val binding: RowTypeTwoBinding) : RecyclerView.ViewHolder(binding.root) {
+        var clRow = binding.clRow
+
+        fun bind (quote : Quote, clickListener:(position : Int) -> Unit){
+            binding.quote=quote
+            clRow.setOnClickListener {
+                clickListener(adapterPosition)
+            }
+            binding.executePendingBindings()
+        }
+    }
+
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MyAdapter.MyViewHolder {
+    ): RecyclerView.ViewHolder {
         // create a new view
         /*val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.my_text_view, parent, false)*/
             layoutInflater = LayoutInflater.from(parent.context)
-        val listItemBinding = MyTextViewBinding.inflate(layoutInflater, parent, false)
-
-       // val binding: MyTextViewBinding = DataBindingUtil.inflate(layoutInflater,R.layout.my_text_view, parent, false)
-        // set the view's size, margins, paddings and layout parameters
-        return MyViewHolder(listItemBinding)
+        return if(viewType==VIEW_TYPE_1) {
+            val listItemBinding = MyTextViewBinding.inflate(layoutInflater, parent, false)
+            // val binding: MyTextViewBinding = DataBindingUtil.inflate(layoutInflater,R.layout.my_text_view, parent, false)
+            // set the view's size, margins, paddings and layout parameters
+            MyViewHolder(listItemBinding)
+        }else {
+            val rowTypeTwoBinding = RowTypeTwoBinding.inflate(layoutInflater, parent, false)
+            TypeTwoViewHolder(rowTypeTwoBinding)
+        }
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.apply {
+    // Return the size of your dataset (invoked by the layout manager)
+    override fun getItemCount() = quotes.size
+    
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        //holder.apply {
             //tvNumber.text = users[position].id
             //tvTitle.text = users?.get(position).title
             //tvDescribtion.text = users?.get(position).desc
             /*clRow.setOnClickListener {
                 clickListener(position)
             }*/
-            bind(users[position],clickListener)
+            //bind(users[position],clickListener)
             //user=users[position]
+        //}
+        if(holder.itemViewType==VIEW_TYPE_1){
+            var myViewHolder = holder as MyViewHolder
+            myViewHolder.bind(quotes[position],clickListener)
+        }else if(holder.itemViewType==VIEW_TYPE_2){
+            var myViewHolder = holder as TypeTwoViewHolder
+            myViewHolder.bind(quotes[position],clickListener)
         }
 
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = users.size
+    override fun getItemViewType(position: Int): Int {
+        return if(position % 2==0){
+            VIEW_TYPE_1
+        }else{
+            VIEW_TYPE_2
+        }
+    }
 }
