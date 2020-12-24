@@ -11,7 +11,7 @@ import com.daimajia.swipe.SwipeLayout
 //https://www.androidhive.info/android-databinding-in-recyclerview-profile-screen/
 //https://stackoverflow.com/a/59030115/3529309
 
-class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (position : Int) -> Unit) :
+class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (position : Int) -> Unit, val deleteClickListener:(position : Int) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_1 : Int =0
@@ -29,13 +29,16 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
         var clRow = binding.clRow
         var quote : Quote? = binding.quote
 
-        fun bind (quote : Quote, clickListener:(position : Int) -> Unit){
+        fun bind (quote : Quote, clickListener:(position : Int) -> Unit, deleteClickListener:(position : Int) -> Unit){
             binding.quote=quote
             clRow.setOnClickListener {
                 clickListener(adapterPosition)
             }
             binding.swipeLayout.addDrag(SwipeLayout.DragEdge.Left,binding.llLeftSwipe)
             binding.swipeLayout.addDrag(SwipeLayout.DragEdge.Right,binding.llRightSwipe)
+            binding.llLeftSwipe.setOnClickListener {
+                deleteClickListener(adapterPosition)
+            }
             binding.executePendingBindings()
         }
     }
@@ -88,7 +91,7 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
         //}
         if(holder.itemViewType==VIEW_TYPE_1){
             var myViewHolder = holder as MyViewHolder
-            myViewHolder.bind(quotes[position],clickListener)
+            myViewHolder.bind(quotes[position],clickListener,deleteClickListener)
         }else if(holder.itemViewType==VIEW_TYPE_2){
             var myViewHolder = holder as TypeTwoViewHolder
             myViewHolder.bind(quotes[position],clickListener)
@@ -102,5 +105,10 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
         }else{
             VIEW_TYPE_2
         }
+    }
+
+    public fun removeItemAt(position: Int){
+        quotes.removeAt(position)
+        notifyItemRemoved(position)
     }
 }

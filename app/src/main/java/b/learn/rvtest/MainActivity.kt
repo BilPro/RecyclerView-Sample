@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     //https://github.com/chthai64/SwipeRevealLayout (Try this)
     
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: MyAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var myDataset: Array<String>
     private lateinit var userData: ArrayList<User>
@@ -97,10 +97,15 @@ class MainActivity : AppCompatActivity() {
 
                         quotes = response.body() as ArrayList<Quote>
                         viewAdapter =
-                            MyAdapter(quotes) { position: Int ->
+                            MyAdapter(quotes,{ position: Int ->
                                 //Toast.makeText(MainActivity::class.java,"Clicked $position",Toast.LENGTH_SHORT).show()
-                            }
-
+                                var addQuote = quotes[quotes.size-1]
+                                var newQuote = Quote((addQuote.id.toInt()+1).toString(),addQuote.en,addQuote.author)
+                                quotes.add(0,newQuote)
+                                viewAdapter.notifyItemInserted(0)
+                            },{ position: Int ->
+                                viewAdapter.removeItemAt(position)
+                            })
                         binding.myRecyclerView.apply {
                             // use this setting to improve performance if you know that changes
                             // in content do not change the layout size of the RecyclerView
