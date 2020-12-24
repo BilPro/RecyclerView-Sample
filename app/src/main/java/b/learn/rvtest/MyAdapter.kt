@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import b.learn.rvtest.databinding.MyTextViewBinding
 import b.learn.rvtest.databinding.RowTypeTwoBinding
+import com.daimajia.swipe.SwipeLayout
 
 
 //https://www.androidhive.info/android-databinding-in-recyclerview-profile-screen/
@@ -33,6 +34,8 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
             clRow.setOnClickListener {
                 clickListener(adapterPosition)
             }
+            binding.swipeLayout.addDrag(SwipeLayout.DragEdge.Left,binding.llLeftSwipe)
+            binding.swipeLayout.addDrag(SwipeLayout.DragEdge.Right,binding.llRightSwipe)
             binding.executePendingBindings()
         }
     }

@@ -50,5 +50,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
     kapt 'com.android.databinding:compiler:3.1.4'
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+
 }
 
