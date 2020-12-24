@@ -14,7 +14,7 @@ object RetrofitClient {
         interceptor.level=HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
         var retrofit:Retrofit = Retrofit.Builder()
-            .baseUrl("https://programming-quotes-api.herokuapp.com/")
+            .baseUrl("https://raw.githubusercontent.com/BilPro/RecyclerView-Sample/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

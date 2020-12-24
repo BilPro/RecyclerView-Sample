@@ -6,7 +6,7 @@ import retrofit2.http.GET
 
 
 interface QuatesService {
-    @GET("quotes")
+    @GET("master/qoutes.json")
     suspend fun getProgrammingQuotes(): Response<List<Quote>>
 }
 
