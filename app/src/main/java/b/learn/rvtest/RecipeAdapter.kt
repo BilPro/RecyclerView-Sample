@@ -5,17 +5,15 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import b.learn.rvtest.databinding.MyTextViewBinding
-import b.learn.rvtest.databinding.RowTypeTwoBinding
+import b.learn.rvtest.databinding.*
 import com.daimajia.swipe.SwipeLayout
 
 
 //https://www.androidhive.info/android-databinding-in-recyclerview-profile-screen/
 //https://stackoverflow.com/a/59030115/3529309
 
-class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (position : Int) -> Unit, val deleteClickListener:(position : Int) -> Unit) :
-    PagedListAdapter<Passenger, RecyclerView.ViewHolder>(MyAdapter.CALLBACK) {
-
+class RecipeAdapter( val clickListener: (position : Int) -> Unit, val deleteClickListener:(position : Int) -> Unit) :
+    PagedListAdapter<Passenger, RecyclerView.ViewHolder>(RecipeAdapter.CALLBACK) {
 
     private val VIEW_TYPE_1 : Int =0
     private val VIEW_TYPE_2 : Int =1
@@ -25,15 +23,15 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder.
     // Each data item is just a string in this case that is shown in a TextView.
-    class MyViewHolder(val binding: MyTextViewBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MyViewHolder(val binding: RecipeTextViewBinding) : RecyclerView.ViewHolder(binding.root) {
         //var tvNumber: AppCompatTextView = binding.tvNumber
         //var tvTitle = binding.tvTitle
         //var tvDescribtion = binding.tvDescription
         var clRow = binding.clRow
-        var quote : Quote? = binding.quote
+        var quote : Passenger? = binding.passenger
 
-        fun bind (quote : Quote, clickListener:(position : Int) -> Unit, deleteClickListener:(position : Int) -> Unit){
-            binding.quote=quote
+        fun bind (quote : Passenger, clickListener:(position : Int) -> Unit, deleteClickListener:(position : Int) -> Unit){
+            binding.passenger=quote
             clRow.setOnClickListener {
                 clickListener(adapterPosition)
             }
@@ -46,11 +44,11 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
         }
     }
 
-    class TypeTwoViewHolder(val binding: RowTypeTwoBinding) : RecyclerView.ViewHolder(binding.root) {
+    class TypeTwoViewHolder(val binding: RecipeRowTypeTwoBinding) : RecyclerView.ViewHolder(binding.root) {
         var clRow = binding.clRow
 
-        fun bind (quote : Quote, clickListener:(position : Int) -> Unit){
-            binding.quote=quote
+        fun bind (quote : Passenger, clickListener:(position : Int) -> Unit){
+            binding.recipe=quote
             clRow.setOnClickListener {
                 clickListener(adapterPosition)
             }
@@ -68,18 +66,18 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
             .inflate(R.layout.my_text_view, parent, false)*/
             layoutInflater = LayoutInflater.from(parent.context)
         return if(viewType==VIEW_TYPE_1) {
-            val listItemBinding = MyTextViewBinding.inflate(layoutInflater, parent, false)
+            val listItemBinding = RecipeTextViewBinding.inflate(layoutInflater, parent, false)
             // val binding: MyTextViewBinding = DataBindingUtil.inflate(layoutInflater,R.layout.my_text_view, parent, false)
             // set the view's size, margins, paddings and layout parameters
             MyViewHolder(listItemBinding)
         }else {
-            val rowTypeTwoBinding = RowTypeTwoBinding.inflate(layoutInflater, parent, false)
+            val rowTypeTwoBinding = RecipeRowTypeTwoBinding.inflate(layoutInflater, parent, false)
             TypeTwoViewHolder(rowTypeTwoBinding)
         }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = quotes.size
+   // override fun getItemCount() = quotes.size
     
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         //holder.apply {
@@ -94,10 +92,10 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
         //}
         if(holder.itemViewType==VIEW_TYPE_1){
             var myViewHolder = holder as MyViewHolder
-            myViewHolder.bind(quotes[position],clickListener,deleteClickListener)
+            getItem(position)?.let { myViewHolder.bind(it,clickListener,deleteClickListener) }
         }else if(holder.itemViewType==VIEW_TYPE_2){
             var myViewHolder = holder as TypeTwoViewHolder
-            myViewHolder.bind(quotes[position],clickListener)
+            getItem(position)?.let { myViewHolder.bind(it,clickListener) }
         }
 
     }
@@ -110,10 +108,10 @@ class MyAdapter(private val quotes:ArrayList<Quote>, val clickListener: (positio
         }
     }
 
-    public fun removeItemAt(position: Int){
+    /*public fun removeItemAt(position: Int){
         quotes.removeAt(position)
         notifyItemRemoved(position)
-    }
+    }*/
 
     companion object {
         val CALLBACK: DiffUtil.ItemCallback<Passenger?> =
